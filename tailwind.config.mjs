@@ -3,49 +3,14 @@ const plugin = require("tailwindcss/plugin");
 const postcss = require("postcss");
 const postcssJs = require("postcss-js");
 
-const clampGenerator = require("./src/css-utils/clamp-generator.js");
-const tokensToTailwind = require("./src/css-utils/tokens-to-tailwind.js");
-
-// Raw design tokens
-const colorTokens = require("./src/design-tokens/colors.json");
-const fontTokens = require("./src/design-tokens/fonts.json");
-const spacingTokens = require("./src/design-tokens/spacing.json");
-const textSizeTokens = require("./src/design-tokens/text-sizes.json");
-const textLeadingTokens = require("./src/design-tokens/text-leading.json");
-const textWeightTokens = require("./src/design-tokens/text-weights.json");
-const viewportTokens = require("./src/design-tokens/viewports.json");
-
-// Process design tokens
-const colors = tokensToTailwind(colorTokens.items);
-const fontFamily = tokensToTailwind(fontTokens.items);
-const fontWeight = tokensToTailwind(textWeightTokens.items);
-const fontSize = tokensToTailwind(clampGenerator(textSizeTokens.items));
-const lineHeight = tokensToTailwind(textLeadingTokens.items);
-const spacing = tokensToTailwind(clampGenerator(spacingTokens.items));
-
 export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   // Add color classes to safe list so they are always generated
   safelist: [],
   theme: {
-    screens: {
-      sm: `${viewportTokens.min}px`,
-      md: `${viewportTokens.mid}px`,
-      lg: `${viewportTokens.max}px`,
-    },
-    colors,
-    spacing,
-    fontSize,
-    lineHeight,
-    fontFamily,
-    fontWeight,
-    backgroundColor: ({ theme }) => theme("colors"),
-    textColor: ({ theme }) => theme("colors"),
-    margin: ({ theme }) => ({
+    margin: () => ({
       auto: "auto",
-      ...theme("spacing"),
     }),
-    padding: ({ theme }) => theme("spacing"),
   },
   variantOrder: [
     "first",
@@ -83,38 +48,6 @@ export default {
   },
 
   plugins: [
-    // Generates custom property values from tailwind config
-    plugin(function ({ addComponents, config }) {
-      let result = "";
-
-      const currentConfig = config();
-
-      const groups = [
-        { key: "colors", prefix: "color" },
-        { key: "spacing", prefix: "space" },
-        { key: "fontSize", prefix: "size" },
-        { key: "lineHeight", prefix: "leading" },
-        { key: "fontFamily", prefix: "font" },
-        { key: "fontWeight", prefix: "font" },
-      ];
-
-      groups.forEach(({ key, prefix }) => {
-        const group = currentConfig.theme[key];
-
-        if (!group) {
-          return;
-        }
-
-        Object.keys(group).forEach((key) => {
-          result += `--${prefix}-${key}: ${group[key]};`;
-        });
-      });
-
-      addComponents({
-        ":root": postcssJs.objectify(postcss.parse(result)),
-      });
-    }),
-
     // Generates custom utility classes
     plugin(function ({ addUtilities, config }) {
       const currentConfig = config();
@@ -134,7 +67,7 @@ export default {
         Object.keys(group).forEach((key) => {
           addUtilities({
             [`.${prefix}-${key}`]: postcssJs.objectify(
-              postcss.parse(`${property}: ${group[key]}`),
+              postcss.parse(`${property}: ${group[key]}`)
             ),
           });
         });
