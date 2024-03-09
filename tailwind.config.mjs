@@ -5,8 +5,6 @@ const postcssJs = require("postcss-js");
 
 export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
-  // Add color classes to safe list so they are always generated
-  safelist: [],
   theme: {
     margin: () => ({
       auto: "auto",
