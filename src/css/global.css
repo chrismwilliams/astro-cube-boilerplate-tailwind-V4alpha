@@ -1,7 +1,7 @@
 @import "global/reset.css";
 @import "global/fonts.css";
 
-/* Would be nice to use @import "variables/breakpoints.css" layer(theme); to be more specific, but 🤷 */
+/* Would be nice to use @import "variables/*.css" layer(theme), but 🤷 */
 @import "variables/breakpoints.css";
 @import "variables/colors.css";
 @import "variables/fonts.css";

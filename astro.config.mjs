@@ -8,5 +8,8 @@ export default defineConfig({
   vite: {
     // option applyBaseStyles doesn't seem to do much atm
     plugins: [tailwindcss({ applyBaseStyles: false })],
+    css: {
+      transformer: "lightningcss",
+    },
   },
 });

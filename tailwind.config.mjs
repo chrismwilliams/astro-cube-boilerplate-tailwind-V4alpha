@@ -31,7 +31,6 @@ export default {
 
   // Disables Tailwind's reset and usage of rgb/opacity
   corePlugins: {
-    preflight: false,
     textOpacity: false,
     backgroundOpacity: false,
     borderOpacity: false,
